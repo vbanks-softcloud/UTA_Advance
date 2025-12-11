@@ -1,0 +1,25 @@
+name: Mirror Repository to Azure DevOps repository
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to Azure DevOps
+        env:
+          AZURE_PAT: ${{ secrets.AZURE_PAT }}
+        run: |
+          git remote add azure "https://vincecareer:${AZURE_PAT}@dev.azure.com/vincecareer/UTA_Advance-backup/_git/UTA_Advance-backup"
+          git push azure --all
+          git push azure --tags
